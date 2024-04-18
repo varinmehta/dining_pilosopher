@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining Philosopher Problem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    #table {
+        position: relative;
+        width: 400px;
+        height: 400px;
+        background-color: #8d6e63;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .philosopher {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #2196F3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .fork {
+        position: absolute;
+        width: 20px;
+        height: 100px;
+        background-color: #795548;
+    }
+</style>
+
+<body>
+    <div id="table">
+        <div class="philosopher" id="philosopher1"></div>
+        <div class="philosopher" id="philosopher2"></div>
+        <div class="philosopher" id="philosopher3"></div>
+        <div class="philosopher" id="philosopher4"></div>
+        <div class="philosopher" id="philosopher5"></div>
+        <div class="fork" id="fork1"></div>
+        <div class="fork" id="fork2"></div>
+        <div class="fork" id="fork3"></div>
+        <div class="fork" id="fork4"></div>
+        <div class="fork" id="fork5"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const philosophers = document.querySelectorAll(".philosopher");
+            const forks = document.querySelectorAll(".fork");
+
+            const numPhilosophers = philosophers.length;
+            let forksAvailable = new Array(numPhilosophers).fill(true);
+
+            philosophers.forEach((philosopher, index) => {
+                philosopher.style.transform = `rotate(${index * (360 / numPhilosophers)}deg) translateY(-200px)`;
+            });
+
+            function startEating(philosopherIndex) {
+                if (forksAvailable[philosopherIndex] && forksAvailable[(philosopherIndex + 1) % numPhilosophers]) {
+                    forksAvailable[philosopherIndex] = false;
+                    forksAvailable[(philosopherIndex + 1) % numPhilosophers] = false;
+                    philosophers[philosopherIndex].textContent = "Eating";
+                    setTimeout(() => {
+                        philosophers[philosopherIndex].textContent = "Thinking";
+                        forksAvailable[philosopherIndex] = true;
+                        forksAvailable[(philosopherIndex + 1) % numPhilosophers] = true;
+                        setTimeout(() => {
+                            startEating(philosopherIndex);
+                        }, Math.random() * 2000);
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        startEating(philosopherIndex);
+                    }, 2000);
+                }
+            }
+
+            philosophers.forEach((philosopher, index) => {
+                startEating(index);
+            });
+        });
+
+    </script>
+</body>
+
+</html>
